@@ -9,7 +9,7 @@ public class Player {
 	private String diceVale = null;
 	private int drinkingTime = 0;
 	private int drunkSeq = 0;
-	private int curDrunkSeq = 0;
+	private int curDrunkSeq = -1;
 	private List<Drinking> drinkings = new ArrayList<Drinking>();
 	
 	public class Drinking {
@@ -40,7 +40,7 @@ public class Player {
 		int dice2 = (int) (Math.random() * 6 + 1);
 		this.diceVale = dice + "," + dice2;
 	}
-
+	
 	public String getName() {
 		return name;
 	}
@@ -71,23 +71,29 @@ public class Player {
 
 	public void addDrinking(int nSecond, int maxDrinkingCnt) {
 		if(drunkSeq < maxDrinkingCnt) {
+			// 마시고 있는 것이 없을 경우
+			if((this.drinkings.size() - 1) == curDrunkSeq && getLeftDrinkingTime() == 0) curDrunkSeq++;
+
 			this.drinkings.add(new Drinking());
 			System.out
-			.println(nSecond + " / add drinking:" + name + " (" + drunkSeq + ")");
+			.println(nSecond + " / add drinking:" + name + " (" + (this.drinkings.size() - 1) + ")");
 			drunkSeq++;
 		}
 	}
 	
 	public boolean drinking(int nSecond, int maxDrinkCnt) {
+		// 마실 것이 없으면 false
+		if(getLeftDrinkingTime() == 0) return false;
+		
 		// 현재 마시고 있는 curDrunkSeq
 		int dringLeftTime = this.drinkings.get(curDrunkSeq).drinking();
 		System.out
 		.println(nSecond + " / " + this.getName() + " is drinking up to :" + dringLeftTime + ". and has next turn " + (this.drinkings.size() - 1));
 		
 		if(dringLeftTime == 0) {
+			System.out
+			.println(nSecond + " / finished drinking:" + name + " (" + curDrunkSeq + ")" );
 			if((this.drinkings.size() - 1) > curDrunkSeq) {
-				System.out
-				.println(nSecond + " / finished drinking:" + name + " (" + curDrunkSeq + ")" );
 				curDrunkSeq++;
 			}
 			return true;
@@ -96,7 +102,8 @@ public class Player {
 	}
 	
 	public int getLeftDrinkingTime() {
-		return this.drinkings.get(curDrunkSeq).getSecondToDrink();
+		if(this.drinkings.size() == 0) return 0;
+		return this.drinkings.get(this.drinkings.size() - 1).getSecondToDrink();
 	}
 
 	public int getDrunkSeq() {

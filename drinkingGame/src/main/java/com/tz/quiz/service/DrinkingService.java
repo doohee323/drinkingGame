@@ -1,16 +1,9 @@
 package com.tz.quiz.service;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import com.tz.quiz.domain.Output;
 import com.tz.quiz.domain.Player;
@@ -23,71 +16,110 @@ public class DrinkingService {
 
 		List<Output> outputs = new ArrayList<Output>();
 
-		// 3) 순서 랜덤 처리
-		Collections.shuffle(players);
+		// // 3) 순서 랜덤 처리
+		// Collections.shuffle(players);
 		roll.setPlayers(players);
 
 		int nSecond = 0;
+		int nSeq = 0;
 		int nTurn = 0;
-		boolean bStart = true;
 		boolean bDrinking = false;
 		boolean bWin = false;
 		while (roll.getPlayers().size() > 1) {
-			// 아직 마시고 있는 사람이 있으며 계속 주사위를 던진다.
-			// check exist drinking player
-			bDrinking = roll.getLeftDrintCnt() > 0 ? true : false;
-			if (bStart || bDrinking) {
-				// 주사위 던지기
+
+			// 드링킹 시간 정산
+			for (int i = 0; i < roll.getPlayers().size(); i++) {
+				// 드링킹해야 하는 사람의 드링킹 시간을 재조
+				Player player = roll.getPlayers().get(i);
+				if (player.getDrinkings().size() > 0) {
+					if (player.drinking(nSecond, roll.getMaxDrinkCnt())) { // finished
+						roll.redueLeftDrintCnt();
+						// 다 마셨으면 roll에 참가할 수 있다.
+						nTurn = findNextDicer(roll, nTurn);
+					}
+					if (player.getDrunkSeq() == roll.getMaxDrinkCnt()
+							&& player.getLeftDrinkingTime() == 0) {
+						System.out.println(nSecond + " / droped off :"
+								+ player.getName());
+						roll.removePlayer(player.getName());
+					}
+				}
+			}
+
+			// 게임 참가자가 1명 밖에 안남으면 끝내
+			if(roll.getPlayers().size() < 2) {
+				break;
+			}
+
+			// 주사위 던지기
+			if (nSecond == 0 || nSecond >= (roll.getPausetime() * nSeq)) {
 				Player curPlayer = roll.getPlayers().get(nTurn);
 				curPlayer.dice();
-				nSecond++;
-				System.out
-				.println(nSecond + " / dice:" + curPlayer.getName() + " / bDrinking:" + bDrinking + " (" + curPlayer.getDiceVale() + ")" + " / bStart:" + bStart);
+
+				// check exist drinking player
+				bDrinking = roll.getLeftDrintCnt() > 0 ? true : false;
+
+				System.out.println(nSecond + " / dice:" + curPlayer.getName()
+						+ " (" + nTurn + ") / bDrinking:" + bDrinking + " ("
+						+ curPlayer.getDiceVale() + ")");
 				bWin = Constants.isWin(curPlayer.getDiceVale());
 				if (bWin) {
 					// 램덤하게 드링커를 선택하고
-					List<Player> drinkers = clone(roll.getPlayers(), curPlayer.getName());
-					Collections.shuffle(drinkers);
+					List<Player> drinkers = clone(roll.getPlayers(),
+							curPlayer.getName());
+					// Collections.shuffle(drinkers);
+					String selectedPlayer = drinkers.get(0).getName();
 					for (int i = 0; i < roll.getPlayers().size(); i++) {
 						// 드링킹을 할당
-						if (drinkers.get(0).getName()
-								.equals(roll.getPlayers().get(i).getName())) {
-							roll.getPlayers().get(i).addDrinking(nSecond, roll.getMaxDrinkCnt());
+						Player player = roll.getPlayers().get(i);
+						if (selectedPlayer.equals(player.getName())) {
+							roll.getPlayers()
+									.get(i)
+									.addDrinking(nSecond, roll.getMaxDrinkCnt());
 							roll.addLeftDrintCnt();
 							break;
 						}
 					}
 				}
-			} else {
-				nTurn++;
-				if (nTurn >= roll.getPlayers().size()) {
-					bStart = true;
-					nTurn = 0;
-				} else {
-					bStart = false;
+				nSeq++;
+				// 아직 마시고 있는 사람이 있으면 이긴 사람이 계속 주사위를 던진다.
+				if (!bDrinking) {
+					// 마시고 있지 않는 다음 선수 찾기 
+					nTurn = findNextDicer(roll, nTurn);
 				}
 			}
-
-			// 드링킹 시간 정산
-			for (int i = 0; i < roll.getPlayers().size(); i++) {
-				// 드링킹해야 하는 사람의 드링킹 시간을 재조
-				if (roll.getPlayers().get(i).getDrinkings().size() > 0) {
-					if (roll.getPlayers().get(i).drinking(nSecond, roll.getMaxDrinkCnt())) { // finished
-						roll.redueLeftDrintCnt();
-					}
-					if(roll.getPlayers().get(i).getDrunkSeq() == roll.getMaxDrinkCnt() && roll.getPlayers().get(i).getLeftDrinkingTime() == 0) {
-						System.out
-						.println(nSecond + " / droped off :" + roll.getPlayers().get(i).getName());
-						roll.removePlayer(roll.getPlayers().get(i).getName());
-					}
-				}
-			}
+			
+			nSecond++;
 		}
 
 		// 4) print output
 		return outputs;
 	}
 
+	/**
+	 * 마시고 있지 않는 다음 선수 찾기 
+	 */
+	public int findNextDicer(Roll roll, int nTurn) {
+		// 아직 다 안마신 사람이 있으면 계속 던진다.
+		// 그렇지 않았을 때에는 턴이 바뀐다.
+		
+		if(roll.getLeftDrintCnt() == 0) {
+			nTurn++;
+		}
+//		nTurn++;
+//		for (int i = nTurn; i < roll.getPlayers().size(); i++) {
+//			if(roll.getPlayers().get(i).getLeftDrinkingTime() == 0) {
+//				break;
+//			} else {
+//				nTurn++;
+//			}
+//		}
+		if (nTurn == roll.getPlayers().size()) {
+			nTurn = 0;
+		}
+		return nTurn;
+	}
+	
 	/**
 	 * <pre>
 	 * </pre>
@@ -101,7 +133,7 @@ public class DrinkingService {
 		Iterator<Player> e = data.iterator();
 		while (e.hasNext()) {
 			Player player = e.next();
-			if(!player.getName().equals(self)) {
+			if (!player.getName().equals(self)) {
 				players.add(player);
 			}
 		}

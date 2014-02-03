@@ -46,12 +46,18 @@ public class DrinkingController {
 		
 		// 2) 선수 입장
 		List<Player> players = new ArrayList<Player>();
-		Player player1 = new Player("Alex", 4);
+		Player player1 = new Player("Alex", 2);
+		System.out
+		.println("0 / ready:" + player1.getName() + " (" + player1.getDrinkingTime() + ")" );
 		players.add(player1);
 		Player player2 = new Player("Bob", 3);
+		System.out
+		.println("0 / ready:" + player2.getName() + " (" + player2.getDrinkingTime() + ")" );
 		players.add(player2);
-//		Player player3 = new Player("Chris", 5);
-//		players.add(player3);
+		Player player3 = new Player("Chris", 5);
+		System.out
+		.println("0 / ready:" + player3.getName() + " (" + player3.getDrinkingTime() + ")" );
+		players.add(player3);
 
 		DrinkingService game = new DrinkingService();
 		game.playDrinkingGame(roll, players);
