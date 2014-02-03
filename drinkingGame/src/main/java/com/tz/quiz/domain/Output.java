@@ -2,6 +2,8 @@ package com.tz.quiz.domain;
 
 import java.io.PrintWriter;
 
+import com.tz.quiz.support.Constants;
+
 public class Output extends PrintWriter {
 
 	private PrintWriter out = null;
@@ -17,7 +19,7 @@ public class Output extends PrintWriter {
 	public Output() {
 		super(System.out, true);
 		out = new PrintWriter(System.out);
-
+		logs = new StringBuffer();
 	}
 
 	/**
@@ -29,7 +31,7 @@ public class Output extends PrintWriter {
 	 */
 	public void println(String strInput) {
 		synchronized (lock) {
-			logs.append(strInput);
+			logs.append(strInput + "\n");
 		}
 	}
 
@@ -44,6 +46,19 @@ public class Output extends PrintWriter {
 		synchronized (lock) {
 			out.print(logs);
 			out.flush();
+		}
+	}
+	
+	/**
+	 * <pre>
+	 * Accesslog 를 File에 Write하는 메소드
+	 * </pre>
+	 * 
+	 * @param strInput
+	 */
+	public static void debug(String strInput) {
+		if (Constants.debug) {
+			System.out.println(strInput);
 		}
 	}
 

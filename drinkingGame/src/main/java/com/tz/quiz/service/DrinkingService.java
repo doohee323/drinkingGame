@@ -39,7 +39,6 @@ public class DrinkingService {
 
 		int nSecond = 0; // time by second
 		int nSeq = 0; // for rolling time (speed of game)
-		int nTurn = 0; // current turn of player
 		boolean bDrinking = false; // whether exist currently drinking person
 		boolean bWin = false; // case of getting winning value
 		while (roll.getPlayers().size() > 1) {
@@ -48,36 +47,41 @@ public class DrinkingService {
 			for (int i = 0; i < roll.getPlayers().size(); i++) {
 				Player player = roll.getPlayers().get(i);
 				if (player.getDrinkings().size() > 0) {
-					if (player.drinking(nSecond, roll.getMaxDrinkCnt())) { // finished
+					if (player.drinking(nSecond)) { // true => finished
 						roll.redueLeftDrintCnt();
 						// once finished drinking, can join rolling again
-						nTurn = findNextDicer(roll, nTurn);
+						roll = findNextDicer(roll);
+
+						roll.setFinishedDrinker(player.getName());
 					}
 					if (player.getDrunkCnt() == roll.getMaxDrinkCnt()
 							&& player.getLeftDrinkingTime() == 0) {
-						System.out.println(nSecond + " / droped off :"
+						Output.debug(nSecond + " / droped off :"
 								+ player.getName());
 						roll.removePlayer(player.getName());
-						nTurn = findNextDicer(roll, nTurn);
+						roll = findNextDicer(roll);
+
+						roll.setDropedDrinker(player.getName());
 					}
 				}
 			}
 
 			// if only one player is left, game finish
 			if (roll.getPlayers().size() < 2) {
+				roll.logEnd();
 				break;
 			}
 
 			// dicing considering with game speed
 			if (nSecond == 0 || nSecond >= (roll.getPausetime() * nSeq)) {
-				Player curPlayer = roll.getPlayers().get(nTurn);
+				Player curPlayer = roll.getCurPlayer();
 				curPlayer.dice();
 
 				// check exist drinking player
 				bDrinking = roll.getLeftDrintCnt() > 0 ? true : false;
 
-				System.out.println(nSecond + " / dice:" + curPlayer.getName()
-						+ " (" + nTurn + ") / bDrinking:" + bDrinking + " ("
+				Output.debug(nSecond + " / dice:" + curPlayer.getName() + " ("
+						+ roll.getnTurn() + ") / bDrinking:" + bDrinking + " ("
 						+ curPlayer.getDiceVale() + ")");
 				bWin = Constants.isWin(curPlayer.getDiceVale());
 				if (bWin) {
@@ -90,23 +94,24 @@ public class DrinkingService {
 							// assign a drinking to drinker
 							Player player = roll.getPlayers().get(i);
 							if (selectedPlayer.equals(player.getName())) {
-								roll.getPlayers()
-										.get(i)
-										.addDrinking(nSecond,
-												roll.getMaxDrinkCnt());
+								roll.getPlayers().get(i).addDrinking(nSecond);
 								roll.addLeftDrintCnt();
+								roll.setAddedDrinker(roll.getPlayers().get(i)
+										.getName());
 								break;
 							}
 						}
-					} else {
-						System.out.println("");
 					}
 				}
 				nSeq++;
+
+				// print status
+				roll.logStatus();
+
 				// when existing drinking plaer, current winner can roll again.
 				if (!bDrinking) {
 					// if else, find the next player who is'nt drinking
-					nTurn = findNextDicer(roll, nTurn);
+					roll = findNextDicer(roll);
 				}
 			}
 
@@ -156,10 +161,10 @@ public class DrinkingService {
 	 * 
 	 * @param Roll
 	 *            roll <Player> current roll
-	 * @param int nTurn current rolling turn
-	 * @return int next rolling turn
+	 * @return Roll roll <Player> current roll
 	 */
-	public int findNextDicer(Roll roll, int nTurn) {
+	public Roll findNextDicer(Roll roll) {
+		int nTurn = roll.getnTurn();
 		// if there is no one drinking, turn change.
 		if (roll.getLeftDrintCnt() == 0) {
 			nTurn++;
@@ -178,7 +183,8 @@ public class DrinkingService {
 		if (nTurn >= roll.getPlayers().size()) {
 			nTurn = 0;
 		}
-		return nTurn;
+		roll.setnTurn(nTurn);
+		return roll;
 	}
 
 }

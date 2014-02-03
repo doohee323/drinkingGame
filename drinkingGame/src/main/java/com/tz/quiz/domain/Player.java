@@ -16,6 +16,9 @@ public class Player {
 	private int drinkingTime = 0; // left time to drink
 	private int drunkCnt = 0; // number which this player's already drunk
 	private int curDrunkSeq = -1; // current sequence to drink
+	private int maxDrinkingCnt = 0; // maximum drinking count which this player
+									// can drink
+
 	private List<Drinking> drinkings = new ArrayList<Drinking>(); // drinkings
 																	// info. to
 																	// drink
@@ -65,11 +68,9 @@ public class Player {
 	 * </pre>
 	 * 
 	 * @param int nSecond second for logging
-	 * @param int maxDrinkingCnt maximum drinking count which this player can
-	 *        drink
 	 * @return boolean add drinking to list or not
 	 */
-	public boolean addDrinking(int nSecond, int maxDrinkingCnt) {
+	public boolean addDrinking(int nSecond) {
 		if (this.drinkings.size() < maxDrinkingCnt) {
 			// when finished this drinking, move to the next drinking
 			if ((this.drinkings.size() - 1) == curDrunkSeq
@@ -77,7 +78,7 @@ public class Player {
 				curDrunkSeq++;
 
 			this.drinkings.add(new Drinking());
-			System.out.println(nSecond + " / add drinking:" + name + " ("
+			Output.debug(nSecond + " / add drinking:" + name + " ("
 					+ (this.drinkings.size() - 1) + ")");
 			return true;
 		}
@@ -90,24 +91,22 @@ public class Player {
 	 * </pre>
 	 * 
 	 * @param int nSecond second for logging
-	 * @param int maxDrinkingCnt maximum drinking count which this player can
-	 *        drink
 	 * @return boolean finished this drinking or not
 	 */
-	public boolean drinking(int nSecond, int maxDrinkCnt) {
+	public boolean drinking(int nSecond) {
 		// when nothing to drink, return false
 		if (getLeftDrinkingTime() == 0)
 			return false;
 
 		// get the left time to drink this drinking
 		int dringLeftTime = this.drinkings.get(curDrunkSeq).drinking();
-		System.out.println(nSecond + " / " + this.getName()
+		Output.debug(nSecond + " / " + this.getName()
 				+ " is drinking up to :" + dringLeftTime
 				+ ". and has next turn " + (this.drinkings.size() - 1));
 
 		// recalculate current drinking sequence (curDrunkSeq)
 		if (dringLeftTime == 0) {
-			System.out.println(nSecond + " / finished drinking:" + name + " ("
+			Output.debug(nSecond + " / finished drinking:" + name + " ("
 					+ curDrunkSeq + ")");
 			if ((this.drinkings.size() - 1) > curDrunkSeq) {
 				curDrunkSeq++;
@@ -129,6 +128,17 @@ public class Player {
 		if (this.drinkings.size() == 0)
 			return 0;
 		return this.drinkings.get(this.drinkings.size() - 1).getSecondToDrink();
+	}
+	
+	/**
+	 * <pre>
+	 * get the left sequence to drink this drinking
+	 * </pre>
+	 * 
+	 * @return left time to drink
+	 */
+	public int getLeftDrinkingCnt() {
+		return drunkCnt - curDrunkSeq;
 	}
 
 	public int getDrunkCnt() {
@@ -167,4 +177,11 @@ public class Player {
 		return drinkings;
 	}
 
+	public int getMaxDrinkingCnt() {
+		return maxDrinkingCnt;
+	}
+
+	public void setMaxDrinkingCnt(int maxDrinkingCnt) {
+		this.maxDrinkingCnt = maxDrinkingCnt;
+	}
 }
