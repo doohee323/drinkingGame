@@ -1,38 +1,50 @@
 package com.tz.quiz.domain;
 
-public class Output {
+import java.io.PrintWriter;
 
-	private int rollSn = 0; // roll Number
-	private int playerCnt = 0; // playerCnt for roll
+public class Output extends PrintWriter {
 
-	public Output(int rollSn, int playerCnt) {
-		this.rollSn = rollSn;
-		this.playerCnt = playerCnt;
+	private PrintWriter out = null;
+	private StringBuffer logs = null;
+
+	/**
+	 * <pre>
+	 * Output 기본 생성자.
+	 * </pre>
+	 * 
+	 * @param logFileName
+	 */
+	public Output() {
+		super(System.out, true);
+		out = new PrintWriter(System.out);
+
 	}
 
-	public String getlog() {
-		String log = "Case #" + this.rollSn + ": " + this.playerCnt;
-		return log;
+	/**
+	 * <pre>
+	 * Accesslog 를 File에 Write하는 메소드
+	 * </pre>
+	 * 
+	 * @param strInput
+	 */
+	public void println(String strInput) {
+		synchronized (lock) {
+			logs.append(strInput);
+		}
 	}
 
-	public void print() {
-		String log = "Case #" + this.rollSn + ": " + this.playerCnt;
-		System.out.println(log);
+	/**
+	 * <pre>
+	 * Accesslog 를 File에 Write하는 메소드
+	 * </pre>
+	 * 
+	 * @param strInput
+	 */
+	public void flush() {
+		synchronized (lock) {
+			out.print(logs);
+			out.flush();
+		}
 	}
 
-	public int getRollSn() {
-		return rollSn;
-	}
-
-	public void setRollSn(int rollSn) {
-		this.rollSn = rollSn;
-	}
-
-	public int getDrinkingCnt() {
-		return playerCnt;
-	}
-
-	public void setDrinkingCnt(int playerCnt) {
-		this.playerCnt = playerCnt;
-	}
 }

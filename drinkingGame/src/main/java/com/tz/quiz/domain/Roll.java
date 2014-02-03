@@ -21,6 +21,22 @@ public class Roll {
 	private int leftDrintCnt = 0; // number of drinking player at this moment
 	private List<Player> players = new ArrayList<Player>();
 
+	private Output output = new Output(); // print the logging
+
+	// logging status
+	public void logStatus(List<Player> players) {
+		output.append("There are " + players.size() + " players.");
+//		output.append("It is " + players..getName() + "'s turn.");
+		for (int i = 0; i < players.size(); i++) {
+			Player player = players.get(i);
+			output.append(player.getName() + " has had " + player.getDrunkCnt()
+					+ " drinks.");
+		}
+		
+		output.append("It is " + players.size() + " players.");
+		
+	}
+
 	public int getPausetime() {
 		return pausetime;
 	}
@@ -60,6 +76,14 @@ public class Roll {
 
 	public void redueLeftDrintCnt() {
 		this.leftDrintCnt--;
+	}
+
+	public Output getOutput() {
+		return output;
+	}
+
+	public void setOutput(Output output) {
+		this.output = output;
 	}
 
 }

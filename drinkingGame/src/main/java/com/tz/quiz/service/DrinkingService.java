@@ -1,6 +1,8 @@
 package com.tz.quiz.service;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import com.tz.quiz.domain.Output;
@@ -25,14 +27,14 @@ public class DrinkingService {
 	 *            <Player> input player to be cloned
 	 * @param List
 	 *            <Player> players participants of game
-	 * @return List<Output> output
+	 * @return Output output print the logging
 	 */
-	public List<Output> playDrinkingGame(Roll roll, List<Player> players) {
+	public Output playDrinkingGame(Roll roll, List<Player> players) {
 
-		List<Output> outputs = new ArrayList<Output>();
-
-		// // 3) 순서 랜덤 처리
-		// Collections.shuffle(players);
+		// play with random roll or not
+		if (Constants.radomPlay) {
+			Collections.shuffle(players);
+		}
 		roll.setPlayers(players);
 
 		int nSecond = 0; // time by second
@@ -48,14 +50,15 @@ public class DrinkingService {
 				if (player.getDrinkings().size() > 0) {
 					if (player.drinking(nSecond, roll.getMaxDrinkCnt())) { // finished
 						roll.redueLeftDrintCnt();
-						// once finished drinking, can join rolling agin
+						// once finished drinking, can join rolling again
 						nTurn = findNextDicer(roll, nTurn);
 					}
-					if (player.getDrunkSeq() == roll.getMaxDrinkCnt()
+					if (player.getDrunkCnt() == roll.getMaxDrinkCnt()
 							&& player.getLeftDrinkingTime() == 0) {
 						System.out.println(nSecond + " / droped off :"
 								+ player.getName());
 						roll.removePlayer(player.getName());
+						nTurn = findNextDicer(roll, nTurn);
 					}
 				}
 			}
@@ -79,20 +82,24 @@ public class DrinkingService {
 				bWin = Constants.isWin(curPlayer.getDiceVale());
 				if (bWin) {
 					// choose driker at ramdon
-					List<Player> drinkers = Constants.clonePlayers(
-							roll.getPlayers(), curPlayer.getName());
-					// Collections.shuffle(drinkers);
-					String selectedPlayer = drinkers.get(0).getName();
-					for (int i = 0; i < roll.getPlayers().size(); i++) {
-						// assign a drinking to drinker
-						Player player = roll.getPlayers().get(i);
-						if (selectedPlayer.equals(player.getName())) {
-							roll.getPlayers()
-									.get(i)
-									.addDrinking(nSecond, roll.getMaxDrinkCnt());
-							roll.addLeftDrintCnt();
-							break;
+					List<Player> drinkers = getDrinkers(roll,
+							curPlayer.getName());
+					if (drinkers.size() > 0) {
+						String selectedPlayer = drinkers.get(0).getName();
+						for (int i = 0; i < roll.getPlayers().size(); i++) {
+							// assign a drinking to drinker
+							Player player = roll.getPlayers().get(i);
+							if (selectedPlayer.equals(player.getName())) {
+								roll.getPlayers()
+										.get(i)
+										.addDrinking(nSecond,
+												roll.getMaxDrinkCnt());
+								roll.addLeftDrintCnt();
+								break;
+							}
 						}
+					} else {
+						System.out.println("");
 					}
 				}
 				nSeq++;
@@ -107,7 +114,39 @@ public class DrinkingService {
 		}
 
 		// 4) print output
-		return outputs;
+		return roll.getOutput();
+	}
+
+	/**
+	 * <pre>
+	 * get available drinkers
+	 * </pre>
+	 * 
+	 * @param Roll
+	 *            roll <Player> current roll
+	 * @param String
+	 *            self except for self
+	 * @return List<Player> available drinkers
+	 */
+	public List<Player> getDrinkers(Roll roll, String self) {
+		int maxDrintCnt = roll.getMaxDrinkCnt();
+
+		// choose driker at ramdon
+		List<Player> players = new ArrayList<Player>();
+		Iterator<Player> e = roll.getPlayers().iterator();
+		while (e.hasNext()) {
+			Player player = e.next();
+			if (!player.getName().equals(self)
+					&& player.getDrinkings().size() < maxDrintCnt) {
+				players.add(player);
+			}
+		}
+
+		// play with random roll or not
+		if (Constants.radomPlay) {
+			Collections.shuffle(players);
+		}
+		return players;
 	}
 
 	/**
@@ -136,7 +175,7 @@ public class DrinkingService {
 		// }
 		// }
 
-		if (nTurn == roll.getPlayers().size()) {
+		if (nTurn >= roll.getPlayers().size()) {
 			nTurn = 0;
 		}
 		return nTurn;

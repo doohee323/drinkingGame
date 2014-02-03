@@ -8,6 +8,7 @@ import java.util.Scanner;
 import com.tz.quiz.domain.Player;
 import com.tz.quiz.domain.Roll;
 import com.tz.quiz.service.DrinkingService;
+import com.tz.quiz.support.Constants;
 
 /**
  * <pre>
@@ -46,6 +47,7 @@ public class DrinkingController {
 
 		// 1) making game
 		Roll roll = new Roll();
+		Constants.radomPlay = false;
 		roll.setMaxDrinkCnt(2);
 		roll.setPausetime(2);
 

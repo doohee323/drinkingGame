@@ -11,12 +11,14 @@ import java.util.List;
  */
 public class Player {
 
-	private String name = null;
-	private String diceVale = null;
-	private int drinkingTime = 0;
-	private int drunkSeq = 0;
-	private int curDrunkSeq = -1;
-	private List<Drinking> drinkings = new ArrayList<Drinking>();
+	private String name = null; // player name
+	private String diceVale = null; // dice result
+	private int drinkingTime = 0; // left time to drink
+	private int drunkCnt = 0; // number which this player's already drunk
+	private int curDrunkSeq = -1; // current sequence to drink
+	private List<Drinking> drinkings = new ArrayList<Drinking>(); // drinkings
+																	// info. to
+																	// drink
 
 	/**
 	 * <pre>
@@ -65,9 +67,10 @@ public class Player {
 	 * @param int nSecond second for logging
 	 * @param int maxDrinkingCnt maximum drinking count which this player can
 	 *        drink
+	 * @return boolean add drinking to list or not
 	 */
-	public void addDrinking(int nSecond, int maxDrinkingCnt) {
-		if (drunkSeq < maxDrinkingCnt) {
+	public boolean addDrinking(int nSecond, int maxDrinkingCnt) {
+		if (this.drinkings.size() < maxDrinkingCnt) {
 			// when finished this drinking, move to the next drinking
 			if ((this.drinkings.size() - 1) == curDrunkSeq
 					&& getLeftDrinkingTime() == 0)
@@ -76,8 +79,9 @@ public class Player {
 			this.drinkings.add(new Drinking());
 			System.out.println(nSecond + " / add drinking:" + name + " ("
 					+ (this.drinkings.size() - 1) + ")");
-			drunkSeq++;
+			return true;
 		}
+		return false;
 	}
 
 	/**
@@ -108,6 +112,7 @@ public class Player {
 			if ((this.drinkings.size() - 1) > curDrunkSeq) {
 				curDrunkSeq++;
 			}
+			drunkCnt++;
 			return true;
 		}
 		return false;
@@ -126,12 +131,12 @@ public class Player {
 		return this.drinkings.get(this.drinkings.size() - 1).getSecondToDrink();
 	}
 
-	public int getDrunkSeq() {
-		return drunkSeq;
+	public int getDrunkCnt() {
+		return drunkCnt;
 	}
 
-	public void setDrunkSeq(int drunkSeq) {
-		this.drunkSeq = drunkSeq;
+	public void setDrunkCnt(int drunkCnt) {
+		this.drunkCnt = drunkCnt;
 	}
 
 	public String getName() {
