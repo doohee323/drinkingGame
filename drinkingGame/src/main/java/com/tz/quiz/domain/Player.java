@@ -3,6 +3,12 @@ package com.tz.quiz.domain;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * <pre>
+ * model class for player
+ * </pre>
+ * 
+ */
 public class Player {
 
 	private String name = null;

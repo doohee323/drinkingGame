@@ -9,6 +9,12 @@ import com.tz.quiz.domain.Player;
 import com.tz.quiz.domain.Roll;
 import com.tz.quiz.service.DrinkingService;
 
+/**
+ * <pre>
+ * runnable class for the app.
+ * </pre>
+ * 
+ */
 public class DrinkingController {
 
 	/**

@@ -8,6 +8,9 @@ import java.util.List;
 import com.tz.quiz.domain.Player;
 
 /**
+ * <pre>
+ * constant variables and static method for utility
+ * </pre>
  * 
  */
 public class Constants {

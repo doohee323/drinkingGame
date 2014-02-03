@@ -8,6 +8,12 @@ import com.tz.quiz.domain.Player;
 import com.tz.quiz.domain.Roll;
 import com.tz.quiz.support.Constants;
 
+/**
+ * <pre>
+ * business class for the app.
+ * </pre>
+ * 
+ */
 public class DrinkingService {
 
 	/**
@@ -73,8 +79,8 @@ public class DrinkingService {
 				bWin = Constants.isWin(curPlayer.getDiceVale());
 				if (bWin) {
 					// choose driker at ramdon
-					List<Player> drinkers = Constants.clonePlayers(roll.getPlayers(),
-							curPlayer.getName());
+					List<Player> drinkers = Constants.clonePlayers(
+							roll.getPlayers(), curPlayer.getName());
 					// Collections.shuffle(drinkers);
 					String selectedPlayer = drinkers.get(0).getName();
 					for (int i = 0; i < roll.getPlayers().size(); i++) {
@@ -135,6 +141,5 @@ public class DrinkingService {
 		}
 		return nTurn;
 	}
-
 
 }
