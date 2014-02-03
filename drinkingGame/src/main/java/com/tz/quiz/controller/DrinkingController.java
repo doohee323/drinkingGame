@@ -47,7 +47,7 @@ public class DrinkingController {
 		// 1) making game
 		Roll roll = new Roll();
 		Constants.radomPlay = false;
-		Constants.debug = false;
+		Constants.debug = true;
 			roll.setMaxDrinkCnt(2);
 		roll.setPausetime(2);
 

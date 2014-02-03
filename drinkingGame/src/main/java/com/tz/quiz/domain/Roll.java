@@ -34,13 +34,14 @@ public class Roll {
 
 	// logging status
 	public void logStatus() {
+		if (Constants.debug) return;
 		Player curPlayer = getCurPlayer();
 		output.println("==== STATUS ====");
 		output.println("There are " + players.size() + " players.");
 		output.println("It is " + curPlayer.getName() + "'s turn.");
 		for (int i = 0; i < players.size(); i++) {
 			Player player = players.get(i);
-			if (player.getDrinkingTime() > 0) {
+			if (player.getDrinkingTime() >= 0) {
 				output.println(player.getName() + " has had "
 						+ player.getDrunkCnt()
 						+ " drinks and is currently drinking "
@@ -75,6 +76,7 @@ public class Roll {
 
 	// logging end
 	public void logEnd() {
+		if (Constants.debug) return;
 		Player curPlayer = getCurPlayer();
 		output.println("==== STATUS ====");
 		output.println("The game is over. " + curPlayer.getName()
