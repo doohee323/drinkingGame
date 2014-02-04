@@ -27,9 +27,9 @@ public class DrinkingService {
 	 *            <Player> input player to be cloned
 	 * @param List
 	 *            <Player> players participants of game
-	 * @return Logger output print the logging
+	 * @return roll output roll itself
 	 */
-	public Logger playDrinkingGame(Roll roll, List<Player> players) {
+	public Roll playDrinkingGame(Roll roll, List<Player> players) {
 
 		// play with random roll or not
 		if (Constants.radomPlay) {
@@ -54,7 +54,7 @@ public class DrinkingService {
 
 						roll.setFinishedDrinker(player.getName());
 					}
-					if (player.getDrunkCnt() == roll.getMaxDrinkCnt()
+					if (player.getDrunkCnt() == roll.getMaxDrinkingCnt()
 							&& player.getLeftDrinkingTime() == 0) {
 						Logger.debug(nSecond + " / droped off :"
 								+ player.getName());
@@ -119,8 +119,8 @@ public class DrinkingService {
 		
 		roll.logEnd();
 
-		// return output
-		return roll.getLogger();
+		// return roll
+		return roll;
 	}
 
 	/**
@@ -135,7 +135,7 @@ public class DrinkingService {
 	 * @return List<Player> available drinkers
 	 */
 	public List<Player> getDrinkers(Roll roll, String self) {
-		int maxDrintCnt = roll.getMaxDrinkCnt();
+		int maxDrintCnt = roll.getMaxDrinkingCnt();
 
 		// choose driker at ramdon
 		List<Player> players = new ArrayList<Player>();

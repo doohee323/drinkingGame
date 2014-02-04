@@ -56,7 +56,7 @@ public class Logger extends PrintWriter {
 	 */
 	public static void debug(String strInput) {
 		if (Constants.debug) {
-			System.out.println("\t\t" + strInput);
+			System.out.println("\t" + strInput);
 		}
 	}
 

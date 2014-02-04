@@ -121,11 +121,11 @@ public class Roll {
 		this.pausetime = pausetime;
 	}
 
-	public int getMaxDrinkCnt() {
+	public int getMaxDrinkingCnt() {
 		return maxDrinkingCnt;
 	}
 
-	public void setMaxDrinkCnt(int maxDrinkingCnt) {
+	public void setMaxDrinkingCnt(int maxDrinkingCnt) {
 		this.maxDrinkingCnt = maxDrinkingCnt;
 	}
 
