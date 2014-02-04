@@ -5,11 +5,11 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
-import com.tz.quiz.domain.Logger;
 import com.tz.quiz.domain.Player;
 import com.tz.quiz.domain.Roll;
 import com.tz.quiz.service.DrinkingService;
 import com.tz.quiz.support.Constants;
+import com.tz.quiz.support.Logger;
 
 /**
  * <pre>

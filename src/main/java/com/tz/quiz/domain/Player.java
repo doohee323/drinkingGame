@@ -3,6 +3,8 @@ package com.tz.quiz.domain;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.tz.quiz.support.Logger;
+
 /**
  * <pre>
  * model class for player

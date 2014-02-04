@@ -5,10 +5,10 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import com.tz.quiz.domain.Logger;
 import com.tz.quiz.domain.Player;
 import com.tz.quiz.domain.Roll;
 import com.tz.quiz.support.Constants;
+import com.tz.quiz.support.Logger;
 
 /**
  * <pre>

@@ -1,4 +1,4 @@
-package com.tz.quiz.domain;
+package com.tz.quiz.support;
 
 import java.io.PrintWriter;
 
