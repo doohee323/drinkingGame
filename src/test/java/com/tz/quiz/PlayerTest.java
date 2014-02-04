@@ -11,11 +11,11 @@ import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.tz.quiz.domain.Logger;
 import com.tz.quiz.domain.Player;
 import com.tz.quiz.domain.Roll;
 import com.tz.quiz.service.DrinkingService;
 import com.tz.quiz.support.Constants;
+import com.tz.quiz.support.Logger;
 import com.tz.test.TestSupport;
 
 /**
