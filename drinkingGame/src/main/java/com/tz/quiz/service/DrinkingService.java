@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import com.tz.quiz.domain.Output;
+import com.tz.quiz.domain.Logger;
 import com.tz.quiz.domain.Player;
 import com.tz.quiz.domain.Roll;
 import com.tz.quiz.support.Constants;
@@ -27,9 +27,9 @@ public class DrinkingService {
 	 *            <Player> input player to be cloned
 	 * @param List
 	 *            <Player> players participants of game
-	 * @return Output output print the logging
+	 * @return Logger output print the logging
 	 */
-	public Output playDrinkingGame(Roll roll, List<Player> players) {
+	public Logger playDrinkingGame(Roll roll, List<Player> players) {
 
 		// play with random roll or not
 		if (Constants.radomPlay) {
@@ -56,7 +56,7 @@ public class DrinkingService {
 					}
 					if (player.getDrunkCnt() == roll.getMaxDrinkCnt()
 							&& player.getLeftDrinkingTime() == 0) {
-						Output.debug(nSecond + " / droped off :"
+						Logger.debug(nSecond + " / droped off :"
 								+ player.getName());
 						roll.removePlayer(player.getName());
 						roll = findNextDicer(roll);
@@ -68,7 +68,6 @@ public class DrinkingService {
 
 			// if only one player is left, game finish
 			if (roll.getPlayers().size() < 2) {
-				roll.logEnd();
 				break;
 			}
 
@@ -80,7 +79,7 @@ public class DrinkingService {
 				// check exist drinking player
 				bDrinking = roll.getLeftDrintCnt() > 0 ? true : false;
 
-				Output.debug(nSecond + " / dice:" + curPlayer.getName() + " ("
+				Logger.debug(nSecond + " / dice:" + curPlayer.getName() + " ("
 						+ roll.getnTurn() + ") / bDrinking:" + bDrinking + " ("
 						+ curPlayer.getDiceVale() + ")");
 				bWin = Constants.isWin(curPlayer.getDiceVale());
@@ -106,7 +105,7 @@ public class DrinkingService {
 				nSeq++;
 
 				// print status
-				roll.logStatus();
+				roll.logStatus(bWin);
 
 				// when existing drinking plaer, current winner can roll again.
 				if (!bDrinking) {
@@ -117,9 +116,11 @@ public class DrinkingService {
 
 			nSecond++;
 		}
+		
+		roll.logEnd();
 
 		// 4) print output
-		return roll.getOutput();
+		return roll.getLogger();
 	}
 
 	/**

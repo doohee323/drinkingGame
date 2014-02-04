@@ -4,19 +4,17 @@ import java.io.PrintWriter;
 
 import com.tz.quiz.support.Constants;
 
-public class Output extends PrintWriter {
+public class Logger extends PrintWriter {
 
 	private PrintWriter out = null;
 	private StringBuffer logs = null;
 
 	/**
 	 * <pre>
-	 * Output 기본 생성자.
+	 * constructor for logger
 	 * </pre>
-	 * 
-	 * @param logFileName
 	 */
-	public Output() {
+	public Logger() {
 		super(System.out, true);
 		out = new PrintWriter(System.out);
 		logs = new StringBuffer();
@@ -24,7 +22,7 @@ public class Output extends PrintWriter {
 
 	/**
 	 * <pre>
-	 * Accesslog 를 File에 Write하는 메소드
+	 * append logs to StringBuffer
 	 * </pre>
 	 * 
 	 * @param strInput
@@ -37,28 +35,28 @@ public class Output extends PrintWriter {
 
 	/**
 	 * <pre>
-	 * Accesslog 를 File에 Write하는 메소드
+	 * prinlnt StringBuffer to console
 	 * </pre>
 	 * 
-	 * @param strInput
 	 */
 	public void flush() {
 		synchronized (lock) {
 			out.print(logs);
 			out.flush();
+			logs = new StringBuffer();
 		}
 	}
-	
+
 	/**
 	 * <pre>
-	 * Accesslog 를 File에 Write하는 메소드
+	 * print log to console for debugging
 	 * </pre>
 	 * 
 	 * @param strInput
 	 */
 	public static void debug(String strInput) {
 		if (Constants.debug) {
-			System.out.println(strInput);
+			System.out.println("\t\t" + strInput);
 		}
 	}
 

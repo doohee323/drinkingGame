@@ -78,7 +78,7 @@ public class Player {
 				curDrunkSeq++;
 
 			this.drinkings.add(new Drinking());
-			Output.debug(nSecond + " / add drinking:" + name + " ("
+			Logger.debug(nSecond + " / add drinking:" + name + " ("
 					+ (this.drinkings.size() - 1) + ")");
 			return true;
 		}
@@ -100,13 +100,13 @@ public class Player {
 
 		// get the left time to drink this drinking
 		int dringLeftTime = this.drinkings.get(curDrunkSeq).drinking();
-		Output.debug(nSecond + " / " + this.getName()
+		Logger.debug(nSecond + " / " + this.getName()
 				+ " is drinking up to :" + dringLeftTime
 				+ ". and has next turn " + (this.drinkings.size() - 1));
 
 		// recalculate current drinking sequence (curDrunkSeq)
 		if (dringLeftTime == 0) {
-			Output.debug(nSecond + " / finished drinking:" + name + " ("
+			Logger.debug(nSecond + " / finished drinking:" + name + " ("
 					+ curDrunkSeq + ")");
 			if ((this.drinkings.size() - 1) > curDrunkSeq) {
 				curDrunkSeq++;
@@ -141,6 +141,21 @@ public class Player {
 		return drunkCnt - curDrunkSeq;
 	}
 
+	/**
+	 * <pre>
+	 * get dice vale for display
+	 * </pre>
+	 * 
+	 * @return String
+	 */
+	public String getDiceDisplayVale() {
+		String tmp[] = diceVale.split(",");
+		if(tmp[0].equals(tmp[1])) {
+			return "double " + tmp[0] + "'s";
+		}
+		return "a " + Integer.toString(Integer.parseInt(tmp[0]) + Integer.parseInt(tmp[1]));
+	}
+	
 	public int getDrunkCnt() {
 		return drunkCnt;
 	}

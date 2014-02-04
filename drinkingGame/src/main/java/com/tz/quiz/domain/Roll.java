@@ -26,22 +26,31 @@ public class Roll {
 	private String finishedDrinker = null; // finished drinker name at last
 	private String dropedDrinker = null; // droped drinker name at last
 
-	private Output output = new Output(); // print the logging
+	private Logger output = new Logger(); // print the logging
 
 	public Roll() {
-		output = new Output(); // print the logging
+		output = new Logger(); // print the logging
 	}
 
 	// logging status
-	public void logStatus() {
-		if (Constants.debug) return;
+	public void logStatus(boolean bWin) {
+		// if (Constants.debug)
+		// return;
+
+		if (bWin || addedDrinker != null || finishedDrinker != null
+				|| dropedDrinker != null) {
+		} else {
+			return;
+		}
+
 		Player curPlayer = getCurPlayer();
 		output.println("==== STATUS ====");
 		output.println("There are " + players.size() + " players.");
 		output.println("It is " + curPlayer.getName() + "'s turn.");
 		for (int i = 0; i < players.size(); i++) {
 			Player player = players.get(i);
-			if (player.getDrinkingTime() >= 0) {
+			if (player.getLeftDrinkingTime() > 0
+					&& player.getLeftDrinkingCnt() > 0) {
 				output.println(player.getName() + " has had "
 						+ player.getDrunkCnt()
 						+ " drinks and is currently drinking "
@@ -55,7 +64,7 @@ public class Roll {
 		output.println(curPlayer.getName() + "'s turn.");
 		output.println("\n");
 		output.println(curPlayer.getName() + " rolled "
-				+ curPlayer.getDiceVale());
+				+ curPlayer.getDiceDisplayVale());
 		if (addedDrinker != null) {
 			output.println(curPlayer.getName() + " says: '" + addedDrinker
 					+ ", drink!'");
@@ -76,7 +85,18 @@ public class Roll {
 
 	// logging end
 	public void logEnd() {
-		if (Constants.debug) return;
+		// if (Constants.debug)
+		// return;
+
+		if (finishedDrinker != null) {
+			output.println(finishedDrinker + " is done drinking.");
+		}
+		if (dropedDrinker != null) {
+			output.println(dropedDrinker
+					+ " says: 'I've had too many. I need to stop.'");
+		}
+		output.println("\n");
+
 		Player curPlayer = getCurPlayer();
 		output.println("==== STATUS ====");
 		output.println("The game is over. " + curPlayer.getName()
@@ -137,11 +157,11 @@ public class Roll {
 		this.leftDrintCnt--;
 	}
 
-	public Output getOutput() {
+	public Logger getLogger() {
 		return output;
 	}
 
-	public void setOutput(Output output) {
+	public void setLogger(Logger output) {
 		this.output = output;
 	}
 
