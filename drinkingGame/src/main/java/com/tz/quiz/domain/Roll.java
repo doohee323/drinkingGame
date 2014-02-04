@@ -26,10 +26,10 @@ public class Roll {
 	private String finishedDrinker = null; // finished drinker name at last
 	private String dropedDrinker = null; // droped drinker name at last
 
-	private Logger output = new Logger(); // print the logging
+	private Logger logger = new Logger(); // print the logging
 
 	public Roll() {
-		output = new Logger(); // print the logging
+		logger = new Logger(); // print the logging
 	}
 
 	// logging status
@@ -44,40 +44,40 @@ public class Roll {
 		}
 
 		Player curPlayer = getCurPlayer();
-		output.println("==== STATUS ====");
-		output.println("There are " + players.size() + " players.");
-		output.println("It is " + curPlayer.getName() + "'s turn.");
+		logger.println("==== STATUS ====");
+		logger.println("There are " + players.size() + " players.");
+		logger.println("It is " + curPlayer.getName() + "'s turn.");
 		for (int i = 0; i < players.size(); i++) {
 			Player player = players.get(i);
 			if (player.getLeftDrinkingTime() > 0
 					&& player.getLeftDrinkingCnt() > 0) {
-				output.println(player.getName() + " has had "
+				logger.println(player.getName() + " has had "
 						+ player.getDrunkCnt()
 						+ " drinks and is currently drinking "
 						+ player.getLeftDrinkingCnt() + " more.");
 			} else {
-				output.println(player.getName() + " has had "
+				logger.println(player.getName() + " has had "
 						+ player.getDrunkCnt() + " drinks.");
 			}
 		}
-		output.println("\n");
-		output.println(curPlayer.getName() + "'s turn.");
-		output.println("\n");
-		output.println(curPlayer.getName() + " rolled "
+		logger.println("\n");
+		logger.println(curPlayer.getName() + "'s turn.");
+		logger.println("\n");
+		logger.println(curPlayer.getName() + " rolled "
 				+ curPlayer.getDiceDisplayVale());
 		if (addedDrinker != null) {
-			output.println(curPlayer.getName() + " says: '" + addedDrinker
+			logger.println(curPlayer.getName() + " says: '" + addedDrinker
 					+ ", drink!'");
 		}
 		if (finishedDrinker != null) {
-			output.println(finishedDrinker + " is done drinking.");
+			logger.println(finishedDrinker + " is done drinking.");
 		}
 		if (dropedDrinker != null) {
-			output.println(dropedDrinker
+			logger.println(dropedDrinker
 					+ " says: 'I've had too many. I need to stop.'");
 		}
-		output.println("\n");
-		output.flush();
+		logger.println("\n");
+		logger.flush();
 		addedDrinker = null;
 		finishedDrinker = null;
 		dropedDrinker = null;
@@ -89,21 +89,21 @@ public class Roll {
 		// return;
 
 		if (finishedDrinker != null) {
-			output.println(finishedDrinker + " is done drinking.");
+			logger.println(finishedDrinker + " is done drinking.");
 		}
 		if (dropedDrinker != null) {
-			output.println(dropedDrinker
+			logger.println(dropedDrinker
 					+ " says: 'I've had too many. I need to stop.'");
 		}
-		output.println("\n");
+		logger.println("\n");
 
 		Player curPlayer = getCurPlayer();
-		output.println("==== STATUS ====");
-		output.println("The game is over. " + curPlayer.getName()
+		logger.println("==== STATUS ====");
+		logger.println("The game is over. " + curPlayer.getName()
 				+ "is the winner.");
-		output.println("\n");
-		output.println(curPlayer.getName() + "is the winner!");
-		output.flush();
+		logger.println("\n");
+		logger.println(curPlayer.getName() + "is the winner!");
+		logger.flush();
 		addedDrinker = null;
 		finishedDrinker = null;
 		dropedDrinker = null;
@@ -158,11 +158,11 @@ public class Roll {
 	}
 
 	public Logger getLogger() {
-		return output;
+		return logger;
 	}
 
 	public void setLogger(Logger output) {
-		this.output = output;
+		this.logger = output;
 	}
 
 	public int getnTurn() {

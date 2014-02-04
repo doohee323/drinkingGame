@@ -119,7 +119,7 @@ public class DrinkingService {
 		
 		roll.logEnd();
 
-		// 4) print output
+		// return output
 		return roll.getLogger();
 	}
 
